@@ -22,45 +22,17 @@ public class Main {
 
     }
 
-    public static void createCSV(HashMap<String, Integer> historiograma, String nombreFichero) {
-        try (BufferedWriter writer = Files.newBufferedWriter(Path.of(nombreFichero + "_histograma.csv"))) {
-            CSVPrinter printer = new CSVPrinter(writer,
-                    CSVFormat.DEFAULT);
-
-            /* Recorre el hash */
-            historiograma.forEach((key, value) -> {
-                if (key.length() > 2) {
-                    try {
-                        printer.printRecord(key, value);
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
-            });
-
-            System.out.println();
-            System.out.println("Fichero CSV generado correctamente.");
-
-            printer.flush();
-            printer.close();
-
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    /***
+     * Función encargada de mostrar el menú de bienvenida.
+     */
+    public static void showMenu() {
+        System.out.println("¡Bienvenid@! Este software permite leer un fichero y transformarlo a CSV.");
+        readNameArchive();
     }
 
-    public static void readHahsMap(HashMap<String, Integer> listadoPalabras) {
-
-        System.out.println();
-        System.out.println("El histograma queda de la siguiente manera: ");
-
-        listadoPalabras.forEach((key, value) -> {
-            if (key.length() > 2) {
-                System.out.println(key + " " + value);
-            }
-        });
-    }
-
+    /***
+     * Función que pide el nombre de un fichero a leer.
+     */
     public static void readNameArchive() {
         System.out.print("Introduzca el nombre del fichero a leer: ");
         var sc = new Scanner(System.in);
@@ -68,6 +40,11 @@ public class Main {
         nameArchive = sc.nextLine();
     }
 
+    /***
+     * Función encargada de realizar todo el proceso del programa. Lee un fichero de texto y lo divide
+     * en palabras.
+     * @return HashMap: HashMap que contiene las palabras y las veces que aparece.
+     */
     public static HashMap<String, Integer> mainProgram() {
         var listadoHash = new HashMap<String, Integer>();
         Scanner almacenPalabras = new Scanner("");
@@ -75,10 +52,8 @@ public class Main {
         BufferedReader br = null;
 
         try {
-            /* Crea un buffer a partir de un fichero. En este caso, 'prueba.txt' */
             br = new BufferedReader(new FileReader(nameArchive + ".txt"));
 
-            /* Guardamos una línea concreta del fichero */
             String lineaFichero = br.readLine();
 
             System.out.println();
@@ -90,7 +65,6 @@ public class Main {
                 Scanner delimitador = new Scanner(lineaFichero);
                 almacenPalabras = delimitador.useDelimiter("[\\s,.:()?!¿¡«'<>-]");
 
-                /* Avanza una línea del fichero */
                 lineaFichero = br.readLine();
 
                 while (almacenPalabras.hasNext()) {
@@ -118,8 +92,59 @@ public class Main {
 
     }
 
-    public static void showMenu() {
-        System.out.println("¡Bienvenid@! Este software permite leer un fichero y transformarlo a CSV.");
-        readNameArchive();
+    /***
+     * Función encargada de mostrar la información de un HashMap.
+     * @param listadoPalabras: HashMap que contiene las palabras y las veces que aparece.
+     */
+    public static void readHahsMap(HashMap<String, Integer> listadoPalabras) {
+
+        System.out.println();
+        System.out.println("El histograma queda de la siguiente manera: ");
+
+        listadoPalabras.forEach((key, value) -> {
+            if (key.length() > 2) {
+                System.out.println(key + " " + value);
+            }
+        });
     }
+
+    /***
+     * Función encargada de crear el fichero CSV.
+     * @param histograma: HashMap que contiene las palabras y las veces que aparece.
+     * @param nombreFichero: Nombre que contendrá el fichero csv.
+     */
+    public static void createCSV(HashMap<String, Integer> histograma, String nombreFichero) {
+        try (BufferedWriter writer = Files.newBufferedWriter(Path.of(nombreFichero + "_histograma.csv"))) {
+            CSVPrinter printer = new CSVPrinter(writer,
+                    CSVFormat.DEFAULT);
+
+            /* Recorre el hash */
+            histograma.forEach((key, value) -> {
+                if (key.length() > 2) {
+                    try {
+                        printer.printRecord(key, value);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            });
+
+            System.out.println();
+            System.out.println("Fichero CSV generado correctamente.");
+
+            printer.flush();
+            printer.close();
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+
+
+
+
+
+
 }
